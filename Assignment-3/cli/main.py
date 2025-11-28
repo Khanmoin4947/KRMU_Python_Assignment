@@ -1,5 +1,3 @@
-# main.py
-
 from library_manager.inventory import LibraryInventory
 from library_manager.book import Book
 
@@ -70,6 +68,6 @@ def run():
             print("An error occurred.")
             print(e)
 
-if __name__ == "__main__":
-    run()
+
+run()
  

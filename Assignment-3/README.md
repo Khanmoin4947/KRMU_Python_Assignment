@@ -9,6 +9,5 @@ A lightweight Python-based library management system using OOP, JSON persistence
 - Logging for all operations
 - Modular package structure
 
-## How to Run
-```bash
+## Run main.py
 python cli/main.py
