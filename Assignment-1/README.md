@@ -1,7 +1,7 @@
 # 🍽️ Daily Calorie Tracker
 
-**Student Name:** Farhan Hussain  
-**Roll Number:** 2501730002  
+**Student Name:** Moin Khan 
+**Roll Number:** 2501730052
 **Course:** Python Programming - Assignment 1
 
 ---
