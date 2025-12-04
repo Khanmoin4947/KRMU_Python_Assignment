@@ -1,6 +1,7 @@
-# main.py
-
+# Name;-Moin Khan
+# roll_no;-2501730052
 from pathlib import Path
+import logging
 
 import pandas as pd
 
@@ -58,44 +59,44 @@ def generate_trend_comments(daily_df: pd.DataFrame, weekly_df: pd.DataFrame) -> 
 
 
 def main():
-    print("=== Campus Energy Dashboard ===")
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    logger.info("=== Campus Energy Dashboard ===")
 
     # ---------- Task 1: Data Ingestion ----------
-    print("[1/5] Loading data from 'data/' folder...")
+    logger.info("[1/5] Loading data from 'data/' folder...")
     df_raw, error_logs = load_energy_data("data")
-
     if error_logs:
-        print("Some issues were found while loading data:")
+        logger.warning("Some issues were found while loading data:")
         for err in error_logs:
-            print("  -", err)
+            logger.warning("  - %s", err)
     else:
-        print("All CSV files loaded successfully.")
+        logger.info("All CSV files loaded successfully.")
 
     # Keep a copy of cleaned data (ensuring timestamp is parsed)
     df_raw["timestamp"] = pd.to_datetime(df_raw["timestamp"], errors="coerce")
     df_clean = df_raw.dropna(subset=["timestamp", "kwh", "building"])
 
     # ---------- Task 2: Aggregations ----------
-    print("[2/5] Calculating daily and weekly aggregates, and building summary...")
+    logger.info("[2/5] Calculating daily and weekly aggregates, and building summary...")
     daily_totals = calculate_daily_totals(df_clean)
     weekly_aggregates = calculate_weekly_aggregates(df_clean)
     building_summary_df = building_wise_summary(df_clean)
 
     # ---------- Task 3: Object-Oriented Modeling ----------
-    print("[3/5] Creating Building and MeterReading objects...")
+    logger.info("[3/5] Creating Building and MeterReading objects...")
     manager = BuildingManager()
     manager.load_from_dataframe(df_clean)
     building_reports = manager.generate_all_reports()
-
-    print("  OOP reports (sample):")
+    logger.debug("  OOP reports (sample):")
     for report in building_reports[:3]:
-        print("   >", report)
+        logger.debug("   > %s", report)
 
     # ---------- Campus-level numbers for summary ----------
     total_campus_kwh, highest_building, peak_time = campus_summary_numbers(df_clean, daily_totals)
 
     # ---------- Task 4: Visualization ----------
-    print("[4/5] Creating dashboard visualization...")
+    logger.info("[4/5] Creating dashboard visualization...")
     output_dir = "output"
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     dashboard_path = str(Path(output_dir) / "dashboard.png")
@@ -107,10 +108,10 @@ def main():
         output_path=dashboard_path,
     )
 
-    print(f"  Dashboard saved as: {dashboard_path}")
+    logger.info("  Dashboard saved as: %s", dashboard_path)
 
     # ---------- Task 5: Persistence & Summary ----------
-    print("[5/5] Saving cleaned data, summary CSV, and text report...")
+    logger.info("[5/5] Saving cleaned data, summary CSV, and text report...")
 
     cleaned_path = save_cleaned_data(df_clean, output_dir=output_dir)
     summary_csv_path = save_building_summary(building_summary_df, output_dir=output_dir)
@@ -126,11 +127,11 @@ def main():
         weekly_trend_comment=weekly_comment,
     )
 
-    print(f"  Cleaned data saved to: {cleaned_path}")
-    print(f"  Building summary saved to: {summary_csv_path}")
-    print(f"  Text summary saved to: {summary_txt_path}")
+    logger.info("  Cleaned data saved to: %s", cleaned_path)
+    logger.info("  Building summary saved to: %s", summary_csv_path)
+    logger.info("  Text summary saved to: %s", summary_txt_path)
 
-    print("\nAll tasks completed successfully!")
+    logger.info("All tasks completed successfully!")
 
 
 if __name__ == "__main__":

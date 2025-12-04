@@ -1,10 +1,13 @@
 # energy_dashboard/ingestion.py
 
 import os
+import logging
 from pathlib import Path
 from typing import Tuple, List
 
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 
 def load_energy_data(data_dir: str = "data") -> Tuple[pd.DataFrame, List[str]]:
@@ -38,12 +41,16 @@ def load_energy_data(data_dir: str = "data") -> Tuple[pd.DataFrame, List[str]]:
 
             # Ensure required columns exist
             if "kwh" not in df.columns:
-                error_logs.append(f"File {csv_file.name} missing 'kwh' column. Skipped.")
+                msg = f"File {csv_file.name} missing 'kwh' column. Skipped."
+                error_logs.append(msg)
+                logger.warning(msg)
                 continue
 
             # Handle timestamp
             if "timestamp" not in df.columns:
-                error_logs.append(f"File {csv_file.name} missing 'timestamp' column. Skipped.")
+                msg = f"File {csv_file.name} missing 'timestamp' column. Skipped."
+                error_logs.append(msg)
+                logger.warning(msg)
                 continue
 
             df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
@@ -61,11 +68,17 @@ def load_energy_data(data_dir: str = "data") -> Tuple[pd.DataFrame, List[str]]:
             all_dfs.append(df)
 
         except FileNotFoundError:
-            error_logs.append(f"File not found: {csv_file}")
+            msg = f"File not found: {csv_file}"
+            error_logs.append(msg)
+            logger.error(msg)
         except pd.errors.EmptyDataError:
-            error_logs.append(f"Empty or invalid CSV file: {csv_file}")
+            msg = f"Empty or invalid CSV file: {csv_file}"
+            error_logs.append(msg)
+            logger.warning(msg)
         except Exception as e:
-            error_logs.append(f"Error reading {csv_file.name}: {e}")
+            msg = f"Error reading {csv_file.name}: {e}"
+            error_logs.append(msg)
+            logger.exception(msg)
 
     if not all_dfs:
         raise ValueError("No valid CSV files were loaded from the data directory.")

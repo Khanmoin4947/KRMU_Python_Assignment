@@ -66,15 +66,23 @@ def campus_summary_numbers(df: pd.DataFrame, daily: pd.DataFrame) -> Tuple[float
     - highest consuming building
     - peak load time (timestamp with max kwh)
     """
+    # Guard against empty data
+    if df is None or df.empty:
+        return 0.0, "N/A", pd.NaT
+
     # Total campus consumption
-    total_campus_kwh = df["kwh"].sum()
+    total_campus_kwh = float(df["kwh"].sum())
 
     # Highest consuming building
     building_totals = df.groupby("building")["kwh"].sum()
-    highest_building = building_totals.idxmax()
+    highest_building = building_totals.idxmax() if not building_totals.empty else "N/A"
 
     # Peak load time (timestamp at which kwh is maximum)
-    peak_row = df.loc[df["kwh"].idxmax()]
-    peak_time = peak_row["timestamp"]
+    try:
+        peak_idx = df["kwh"].idxmax()
+        peak_row = df.loc[peak_idx]
+        peak_time = peak_row.get("timestamp", pd.NaT)
+    except Exception:
+        peak_time = pd.NaT
 
     return total_campus_kwh, highest_building, peak_time
