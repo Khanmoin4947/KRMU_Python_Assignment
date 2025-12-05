@@ -77,8 +77,8 @@ When saved, the report (`calorie_log.txt`) contains:
 
 ```text
 ===== DAILY CALORIE TRACKER REPORT =====
-NAME: FARHAN HUSSAIN
-ROLL NUMBER: 2501730002
+NAME: moin khan
+ROLL NUMBER: 2501730052
 DATE: 2025-12-03 ...
 
 S NO MEAL NAME           CALORIES
@@ -112,9 +112,7 @@ STATUS: You are within your daily calorie limit.
 ## 📦 File Structure
 
 ```
-daily_calorie_tracker/
-├── tracker.py           # Main application
-├── calorie_log.txt      # Generated report (after saving)
+daily_calorie_tracker.py           # Main appliction
 └── README.md            # This file
 ```
 
@@ -145,8 +143,8 @@ pip install colorama
 
 ## 👨‍💻 Author
 
-**Farhan Hussain**  
-Roll Number: 2501730002  
+**Moin khan**  
+Roll Number: 2501730052 
 B.Tech CSE (AI & ML)  
 K.R. Mangalam University
 
